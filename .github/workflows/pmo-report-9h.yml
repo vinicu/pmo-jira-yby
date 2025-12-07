@@ -31,7 +31,7 @@ jobs:
         run: python scripts/pmo_report_generator.py --time 09h
       
       - name: Upload Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: pmo-report-9h
           path: reports/
