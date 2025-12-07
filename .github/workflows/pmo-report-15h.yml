@@ -1,0 +1,37 @@
+name: PMO Report 15h
+
+on:
+  schedule:
+    - cron: '0 15 * * *'  # 3 PM BRT
+  workflow_dispatch:
+
+jobs:
+  pmo-report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests python-dotenv jinja2 html2text
+      
+      - name: Run PMO Report Script
+        env:
+          JIRA_URL: ${{ secrets.JIRA_URL }}
+          JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          GMAIL_TOKEN: ${{ secrets.GMAIL_TOKEN }}
+          OUTLOOK_PASSWORD: ${{ secrets.OUTLOOK_PASSWORD }}
+        run: python scripts/pmo_report_generator.py --time 15h
+      
+      - name: Upload Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: pmo-report-15h
+          path: reports/
